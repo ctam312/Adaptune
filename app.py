@@ -1,7 +1,7 @@
 from flask import *
 from authorization import SpotifyClient
 from urllib.parse import urlparse
-from playback import getTrackIds, playTracks
+from playback import getTrackIds, playSingleTrack, playTracks, playTrack
 import subprocess
 
 
@@ -24,7 +24,6 @@ def login():
 
 @app.route("/callback/q")
 def callback():
-    print("sdfsdf")
     auth_token = request.args['code']
     client_id = 'e7dd4d704dbf462da4d1bb541f55695f'
     client_secret = '07bc8202e8404f7e82df0d49a7128129'
@@ -54,11 +53,12 @@ def playlist():
         except:
             return "invalid playlist link"
 
-        return render_template('user_playlist.html', tracks=tracks, playlistId=id) 
+        return render_template('user_playlist.html', tracks=tracks, playlistId=id, currentTrack = None, len=len(tracks)) 
 
 
 @app.route('/background_process_test')
 def background_process_test():
-    print("test")
-    playTracks(session["tracks"], session["playlistId"], session["auth"])
-    return ("nothing")
+    args = request.args.to_dict()
+    print(args)
+    playSingleTrack(session["playlistId"], args['trackId'], session["auth"], args['index'])
+    return render_template('user_playlist.html', tracks=session["tracks"], playlistId=session["playlistId"], len=len(session["tracks"]))

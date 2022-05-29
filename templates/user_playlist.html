@@ -9,8 +9,9 @@
 
     <h2>Tracks</h2>
     <il>
-        {%for t in tracks%}
-            <li>{{t}}</li>
+        {%for i in range(len)%}
+            <li>{{tracks[i]}}</li>
+            <a href=# id="test" trackId="{{tracks[i]}}" index="{{i}}"><button class="fas fa-play-circle" trackId="{{tracks[i]}}" index="{{i}}"></button></a>
         {%endfor%}
     </il>
 </br>
@@ -22,7 +23,7 @@
             $(function() {
             $('a#test').on('click', function(e) {
                 e.preventDefault()
-                $.getJSON('/background_process_test',
+                $.getJSON('/background_process_test', {trackId: e.target.getAttribute('trackId'), index: e.target.getAttribute('index')},
                     function(data) {
                 //do nothing
                 });
@@ -31,7 +32,6 @@
             });
     </script>
 
-    <a href=# id=test><button class="fas fa-play-circle" ></button></a>
 
 
     <br/>
