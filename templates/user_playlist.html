@@ -1,0 +1,41 @@
+<!doctype html>
+<html>
+<head>
+    <title>Current Playlist</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css">
+</head>
+<body>
+    <h1>Current Playlist</h1>
+
+    <h2>Tracks</h2>
+    <il>
+        {%for t in tracks%}
+            <li>{{t}}</li>
+        {%endfor%}
+    </il>
+</br>
+</br>
+<p>open up the playlist on spotify web player and click play</p>
+        
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script type=text/javascript>
+            $(function() {
+            $('a#test').on('click', function(e) {
+                e.preventDefault()
+                $.getJSON('/background_process_test',
+                    function(data) {
+                //do nothing
+                });
+                return false;
+            });
+            });
+    </script>
+
+    <a href=# id=test><button class="fas fa-play-circle" ></button></a>
+
+
+    <br/>
+    <a href="{{ url_for('playlist') }}"><button>Back to Search</button></a>
+
+</body>
+</html>
