@@ -9,7 +9,6 @@ import base64
 # used to convert JSON data into strings
 import json
 import requests
-from sklearn.metrics import r2_score
 import time
 
 

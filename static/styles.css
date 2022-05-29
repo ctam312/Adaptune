@@ -11,6 +11,15 @@ body {
   color: #384047;
 }
 
+.homepage_logo {
+  max-width: 100%;
+  max-width: 100%;
+  margin: 5px auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 form {
   max-width: 300px;
   margin: 10px auto;
@@ -44,7 +53,7 @@ select {
   outline: 0;
   padding: 15px;
   width: 100%;
-  background-color: #e8eeef;
+  background-color: #ffffff;
   color: #8a97a0;
   box-shadow: 0 1px 0 rgba(0, 0, 0, 0.03) inset;
   margin-bottom: 30px;
