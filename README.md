@@ -6,13 +6,13 @@
     <img src="static/images/Adaptune.png" alt="Logo" width="80" height="80">
   </a>
 
-  <h3 align="center">Adaptatune</h3>
+  <h3 align="center">Adaptune</h3>
 
   <p align="center">
     Skim through a playlist by creating a custom Spotify playlist based on your favourite tracks
     <br />
     <br />
-    <a href="https://adaptatune.herokuapp.com/">View Deployed Version</a>
+    <a href="https://adaptune.herokuapp.com/">View Deployed Version</a>
   </p>
 </div>
 
@@ -49,7 +49,7 @@
 <br />
 
 
-Users want to listen to long playlists such as Spotify's Discover Weekly, but don't have the time to sit through all 1.5 hours of music to decide what they like. Adaptatune helps shorten each song in a playlist by finding the loudest section and having users decide whether they like the song based on a 10-25 second sample. This shortens the browsing experience to just 10 minutes (90% decrease!)
+Users want to listen to long playlists such as Spotify's Discover Weekly, but don't have the time to sit through all 1.5 hours of music to decide what they like. Adaptune helps shorten each song in a playlist by finding the loudest section and having users decide whether they like the song based on a 10-25 second sample. This shortens the browsing experience to just 10 minutes (90% decrease!)
 
 
 <p align="right">(<a href="#top">back to top</a>)</p>
