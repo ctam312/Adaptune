@@ -16,7 +16,7 @@ def home():
 def login():
     client_id = 'e7dd4d704dbf462da4d1bb541f55695f'
     client_secret = '07bc8202e8404f7e82df0d49a7128129'
-    spotify_client = SpotifyClient(client_id, client_secret, port=5000)
+    spotify_client = SpotifyClient(client_id, client_secret)
     auth_url = spotify_client.get_auth_url()
     print('hello')
     return redirect(auth_url)
@@ -28,7 +28,7 @@ def callback():
     auth_token = request.args['code']
     client_id = 'e7dd4d704dbf462da4d1bb541f55695f'
     client_secret = '07bc8202e8404f7e82df0d49a7128129'
-    spotify_client = SpotifyClient(client_id, client_secret, port=5000)
+    spotify_client = SpotifyClient(client_id, client_secret)
     spotify_client.get_authorization(auth_token)
     authorization_header = spotify_client.authorization_header
     session["auth"] = authorization_header
