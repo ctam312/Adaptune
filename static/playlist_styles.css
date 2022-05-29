@@ -1,0 +1,29 @@
+
+
+#track {
+    margin-left: 400px;
+    display: flex;
+    align-items: center; /* aligns all the items vertically centered */
+    justify-content: left; /* aligns all the items horizontally centered */
+    margin-bottom: 25px;
+    min-width: 500px;
+}
+
+#track-content{
+    margin-left: 40px;
+    display: block;
+    align-items: left;
+    height: 70px;
+    margin-bottom: 20px;
+}
+
+img {
+    width: 100px;
+    height: auto;
+}
+
+#actions {
+    margin-left: auto; 
+    margin-right: 870px;
+}
+

@@ -1,8 +1,7 @@
 from flask import *
 from authorization import SpotifyClient
 from urllib.parse import urlparse
-from playback import getTrackIds, playTracks
-import subprocess
+from playback import getTrackIds, playSingleTrack, playTracks, playTrack, getTracks
 
 
 app = Flask(__name__)
@@ -24,7 +23,6 @@ def login():
 
 @app.route("/callback/q")
 def callback():
-    print("sdfsdf")
     auth_token = request.args['code']
     client_id = 'e7dd4d704dbf462da4d1bb541f55695f'
     client_secret = '07bc8202e8404f7e82df0d49a7128129'
@@ -41,24 +39,25 @@ def playlist():
     else:
         
         data = request.form['link']
-
         try:
             # get playlistId from link
             o = urlparse(data)
             p = o.path.split('/')
             id = p[-1]
-            tracks = getTrackIds(id, session["auth"])
-            # use spotify api to check if valid playlistId
-            session["tracks"] = tracks
+            print(id)
+            tracks = getTracks(id, session["auth"])
             session["playlistId"] = id
+            print(tracks)
         except:
             return "invalid playlist link"
 
-        return render_template('user_playlist.html', tracks=tracks, playlistId=id) 
+        return render_template('user_playlist.html', tracks=tracks, playlistId=id, currentTrack = None, len=len(tracks)) 
 
 
 @app.route('/background_process_test')
 def background_process_test():
-    print("test")
-    playTracks(session["tracks"], session["playlistId"], session["auth"])
-    return ("nothing")
+    args = request.args.to_dict()
+
+    tracks = getTracks(session["playlistId"], session["auth"])
+    playSingleTrack(session["playlistId"], args['trackId'], session["auth"], args['index'])
+    return render_template('user_playlist.html', tracks=tracks, playlistId=session["playlistId"], len=len(tracks))

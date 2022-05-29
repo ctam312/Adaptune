@@ -46,7 +46,7 @@ BASE_URL = 'https://api.spotify.com/v1/'
 
 
 def getLoudestSection(track_id, auth):
-
+    print(track_id)
     r = requests.get(BASE_URL + 'audio-analysis/' + track_id, headers=auth)
 
     r = r.json()
@@ -70,7 +70,7 @@ def playTrack(context_uri, section, pos, auth):
     }
 
     r = requests.put('https://api.spotify.com/v1/me/player/play', data=json.dumps(dat), headers=auth)
-    time.sleep(section[1])
+    time.sleep(min(section[1], 25))
     r = requests.put('https://api.spotify.com/v1/me/player/pause', headers=auth)
 
 
@@ -84,21 +84,31 @@ def getTrackIds(playlistId, auth):
     return trackIds
 
 
-def getTrackNames(playlistId):
-    r = requests.get('https://api.spotify.com/v1/playlists/{}'.format(playlistId), headers=headers)
+def getTracks(playlistId, auth):
+    r = requests.get('https://api.spotify.com/v1/playlists/{}'.format(playlistId), headers=auth)
     r = r.json()
-    trackIds = []
+    tracks = []
     for t in r['tracks']['items']:
-        trackIds.append(t['track']['name'])
-    return trackIds
+        tracks.append(t['track'])
+
+    return tracks
 
 
 def playTracks(trackIds, playlistId, auth):
     for i in range(len(trackIds)):
         s = getLoudestSection(trackIds[i], auth)
         print(s)
-        playTrack('spotify:playlist:{}'.format(playlistId), s, i, auth) 
-        r = requests.post('https://api.spotify.com/v1/me/player/next', headers=auth)
+        #r = requests.post('https://adaptatune.herokuapp.com/')
+        playTrack('spotify:playlist:{}'.format(playlistId), s, i, auth)
+
+    
+def nextTrack(auth):
+    r = requests.post('https://api.spotify.com/v1/me/player/next', headers=auth)
+
+
+def playSingleTrack(playlistId, trackId, auth, pos):
+    s = getLoudestSection(trackId, auth)
+    playTrack('spotify:playlist:{}'.format(playlistId), s, pos, auth)
 
 
 if __name__ == "__main__":
