@@ -71,7 +71,6 @@ def playTrack(context_uri, section, pos, auth):
     }
 
     r = requests.put('https://api.spotify.com/v1/me/player/play', data=json.dumps(dat), headers=auth)
-    print(r.json())
     time.sleep(section[1])
     r = requests.put('https://api.spotify.com/v1/me/player/pause', headers=auth)
 
@@ -93,11 +92,12 @@ def getTrackNames(playlistId):
     for t in r['tracks']['items']:
         trackIds.append(t['track']['name'])
     return trackIds
-    
+
 
 def playTracks(trackIds, playlistId, auth):
     for i in range(len(trackIds)):
         s = getLoudestSection(trackIds[i], auth)
+        print(s)
         playTrack('spotify:playlist:{}'.format(playlistId), s, i, auth) 
         r = requests.post('https://api.spotify.com/v1/me/player/next', headers=auth)
 
