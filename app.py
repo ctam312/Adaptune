@@ -1,8 +1,7 @@
 from flask import *
 from authorization import SpotifyClient
 from urllib.parse import urlparse
-from playback import getTrackIds, playSingleTrack, playTracks, playTrack
-import subprocess
+from playback import getTrackIds, playSingleTrack, playTracks, playTrack, getTracks
 
 
 app = Flask(__name__)
@@ -16,7 +15,7 @@ def home():
 def login():
     client_id = 'e7dd4d704dbf462da4d1bb541f55695f'
     client_secret = '07bc8202e8404f7e82df0d49a7128129'
-    spotify_client = SpotifyClient(client_id, client_secret)
+    spotify_client = SpotifyClient(client_id, client_secret, port=5000)
     auth_url = spotify_client.get_auth_url()
     print('hello')
     return redirect(auth_url)
@@ -27,7 +26,7 @@ def callback():
     auth_token = request.args['code']
     client_id = 'e7dd4d704dbf462da4d1bb541f55695f'
     client_secret = '07bc8202e8404f7e82df0d49a7128129'
-    spotify_client = SpotifyClient(client_id, client_secret)
+    spotify_client = SpotifyClient(client_id, client_secret, port=5000)
     spotify_client.get_authorization(auth_token)
     authorization_header = spotify_client.authorization_header
     session["auth"] = authorization_header
@@ -40,16 +39,15 @@ def playlist():
     else:
         
         data = request.form['link']
-
         try:
             # get playlistId from link
             o = urlparse(data)
             p = o.path.split('/')
             id = p[-1]
-            tracks = getTrackIds(id, session["auth"])
-            # use spotify api to check if valid playlistId
-            session["tracks"] = tracks
+            print(id)
+            tracks = getTracks(id, session["auth"])
             session["playlistId"] = id
+            print(tracks)
         except:
             return "invalid playlist link"
 
@@ -59,6 +57,7 @@ def playlist():
 @app.route('/background_process_test')
 def background_process_test():
     args = request.args.to_dict()
-    print(args)
+
+    tracks = getTracks(session["playlistId"], session["auth"])
     playSingleTrack(session["playlistId"], args['trackId'], session["auth"], args['index'])
-    return render_template('user_playlist.html', tracks=session["tracks"], playlistId=session["playlistId"], len=len(session["tracks"]))
+    return render_template('user_playlist.html', tracks=tracks, playlistId=session["playlistId"], len=len(tracks))

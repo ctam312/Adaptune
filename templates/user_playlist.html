@@ -3,6 +3,7 @@
 <head>
     <title>Current Playlist</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css">
+    <link rel="stylesheet" href="/static/playlist_styles.css">
 </head>
 <body>
     <h1>Current Playlist</h1>
@@ -10,14 +11,22 @@
     <h2>Tracks</h2>
     <il>
         {%for i in range(len)%}
-            <li>{{tracks[i]}}</li>
-            <a href=# id="test" trackId="{{tracks[i]}}" index="{{i}}"><button class="fas fa-play-circle" trackId="{{tracks[i]}}" index="{{i}}"></button></a>
+            <div id="track">
+                <img src="{{tracks[i]['album']['images'][0]['url']}}"/>
+                <div id="track-content">
+                    <h4>{{tracks[i]['name']}}</h4>
+                    <p>{{tracks[i]['artists'][0]['name']}}</p>
+                </div>
+                <div id="actions">
+                    <a href=# id="test" trackId="{{tracks[i]['id']}}" index="{{i}}"><button class="fas fa-play-circle" trackId="{{tracks[i]['id']}}" index="{{i}}" ></button></a>
+                    <a href=# id="like" trackId="{{tracks[i]['id']}}" index="{{i}}"><button id="like" class="far fa-heart" trackId="{{tracks[i]['id']}}" index="{{i}}" onclick="myFunction(this)"></button></a>
+                    
+                </div>
+            </div>
         {%endfor%}
     </il>
 </br>
-</br>
-<p>open up the playlist on spotify web player and click play</p>
-        
+</br>        
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
     <script type=text/javascript>
             $(function() {
@@ -32,10 +41,31 @@
             });
     </script>
 
+<script>
+function myFunction(element) {
+    var elem = element
+    console.log(elem)
+    if (elem.classList.contains('far')){
+        elem.classList.add('fas');
+        elem.classList.remove('far');
+        elem.style.color = 'red';
+    }
+    else {
+        elem.classList.add('far');
+        elem.classList.remove('fas');
+        elem.style.color = 'black';
+    }
+}
+</script>
+
+  
 
 
+    <a><button>Generate playlist</button></a>
     <br/>
     <a href="{{ url_for('playlist') }}"><button>Back to Search</button></a>
+
+ 
 
 </body>
 </html>

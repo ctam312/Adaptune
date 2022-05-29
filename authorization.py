@@ -17,7 +17,7 @@ class SpotifyClient:
     SCOPE = "playlist-modify-public playlist-modify-private playlist-read-private user-read-recently-played user-modify-playback-state playlist-read-private" 
 
     # Client side
-    CLIENT_SIDE_URL = 'http://adaptatune.herokuapp.com'
+    CLIENT_SIDE_URL = 'http://127.0.0.1'
 
     def __init__(self, client_id, client_secret, client_side_url=CLIENT_SIDE_URL, port=None):
         self.client_id = client_id

@@ -84,13 +84,14 @@ def getTrackIds(playlistId, auth):
     return trackIds
 
 
-def getTrackNames(playlistId):
-    r = requests.get('https://api.spotify.com/v1/playlists/{}'.format(playlistId), headers=headers)
+def getTracks(playlistId, auth):
+    r = requests.get('https://api.spotify.com/v1/playlists/{}'.format(playlistId), headers=auth)
     r = r.json()
-    trackIds = []
+    tracks = []
     for t in r['tracks']['items']:
-        trackIds.append(t['track']['name'])
-    return trackIds
+        tracks.append(t['track'])
+
+    return tracks
 
 
 def playTracks(trackIds, playlistId, auth):
