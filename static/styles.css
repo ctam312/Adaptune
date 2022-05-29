@@ -7,8 +7,8 @@
 }
 
 body {
-  font-family: 'Nunito', sans-serif;
-  color: #384047;
+  font-family: 'Josefin Sans';
+  color: #f6f6e9;
 }
 
 .homepage_logo {
@@ -24,7 +24,8 @@ form {
   max-width: 300px;
   margin: 10px auto;
   padding: 10px 20px;
-  background: #f4f7f8;
+  color: black;
+  background: #ffffff;
   border-radius: 8px;
 }
 
@@ -53,7 +54,7 @@ select {
   outline: 0;
   padding: 15px;
   width: 100%;
-  background-color: #ffffff;
+  background-color: #f6f6e9;
   color: #8a97a0;
   box-shadow: 0 1px 0 rgba(0, 0, 0, 0.03) inset;
   margin-bottom: 30px;
@@ -73,13 +74,13 @@ select {
 button {
   padding: 19px 39px 18px 39px;
   color: #FFF;
-  background-color: #4bc970;
+  background-color: #1DB954;
   font-size: 18px;
   text-align: center;
   font-style: normal;
   border-radius: 5px;
   width: 100%;
-  border: 1px solid #3ac162;
+  border: 1px solid #1DB954;
   border-width: 1px 1px 3px;
   box-shadow: 0 -1px 0 rgba(255, 255, 255, 0.1) inset;
   margin-bottom: 10px;
@@ -106,8 +107,8 @@ label.light {
 }
 
 .number {
-  background-color: #5fcf80;
-  color: #fff;
+  background-color: #1DB954;
+  color: #f6f6e9;
   height: 30px;
   width: 30px;
   display: inline-block;
@@ -117,6 +118,22 @@ label.light {
   text-align: center;
   text-shadow: 0 1px 0 rgba(255, 255, 255, 0.2);
   border-radius: 100%;
+}
+
+.fade {
+  background-color: #1DB954;
+  color: #f6f6e9;
+  transition: background-color 1s;
+}
+
+.fade:hover {
+  background-color: #457d58;
+}
+
+.fade:focus,
+.fade:active {
+  background-color: black;
+  transition: none;
 }
 
 @media screen and (min-width: 480px) {

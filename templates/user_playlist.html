@@ -4,11 +4,28 @@
     <title>Current Playlist</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css">
     <link rel="stylesheet" href="/static/playlist_styles.css">
+    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Josefin+Sans" />
 </head>
 <body style="background-color: rgb(86, 86, 86)">
-    <h1>Current Playlist</h1>
+    <h1>Submitted Playlist</h1>
+    <h2>Instructions: </h2>
+    <h3>
+        <p>
+        1. Make sure you have the Spotify Web Player (in-browser) open
+        </p>
+        <p>
+        2. Click on the play button to have a quick preview of the best part of the song. 
+        </p>
+        <p>
+        3. Click on the heart button to have it added to the final playlist.
+        </p>
+    </h3>
 
-    <h2>Tracks</h2>
+    <p>
+        <h2>Tracks:</h2>
+    </p>
+    
+
     <il>
 
         {%for i in range(len)%}
@@ -21,13 +38,13 @@
                 <div id="actions">
                     <a href=# id="test" trackId="{{tracks[i]['id']}}" index="{{i}}"><button class="fas fa-play-circle" trackId="{{tracks[i]['id']}}" index="{{i}}" ></button></a>
                     <a href=# id="like" trackId="{{tracks[i]['id']}}" index="{{i}}"><button id="like" class="far fa-heart" trackId="{{tracks[i]['id']}}" index="{{i}}" onclick="myFunction(this)"></button></a>
-                    
                 </div>
             </div>
         {%endfor%}
 
     </il>
 </br>
+
 </br>        
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
     <script type=text/javascript>
@@ -62,11 +79,11 @@ function myFunction(element) {
 
   
 
-
+    <div id="extras"
     <a><button>Generate playlist</button></a>
     <br/>
     <a href="{{ url_for('playlist') }}"><button>Back to Search</button></a>
-
+    </div>
  
 
 </body>
