@@ -1,0 +1,22 @@
+<!doctype html>
+<html>
+<head>
+    <title>Recommendations</title>
+    <link rel="stylesheet" href="/static/styles.css">
+    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Josefin+Sans" />
+</head>
+<body style="background-color: rgb(86, 86, 86)">
+    <h1>Your vibe: {{ category }}</h1>
+    <p>We've created a playlist for you!</p>
+    <p><strong>{{ playlist_name }}</strong></p>
+    <a href="https://open.spotify.com/playlist/{{ playlist_id }}" target="_blank">Open Playlist</a>
+    <h2>Recommended Tracks</h2>
+    <ul>
+    {% for track in recs %}
+        <li>{{ track['name'] }} - {{ track['artists'][0]['name'] }}</li>
+    {% endfor %}
+    </ul>
+    <br/>
+    <a href="{{ url_for('playlist') }}"><button>Back to Search</button></a>
+</body>
+</html>
