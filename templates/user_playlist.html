@@ -68,11 +68,13 @@ function myFunction(element) {
         elem.classList.add('fas');
         elem.classList.remove('far');
         elem.style.color = 'red';
+        $.post('/like_track', {track_id: elem.getAttribute('trackId')});
     }
     else {
         elem.classList.add('far');
         elem.classList.remove('fas');
         elem.style.color = 'black';
+        $.post('/like_track', {track_id: elem.getAttribute('trackId')});
     }
 }
 </script>
@@ -80,7 +82,7 @@ function myFunction(element) {
   
 
     <div id="extras">
-    <a><button>Generate playlist</button></a>
+    <a href="{{ url_for('generate_playlist') }}"><button id="generate">Generate playlist</button></a>
     <br/>
     <a href="{{ url_for('playlist') }}"><button>Back to Search</button></a>
     </div>
