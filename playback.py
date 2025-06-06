@@ -33,8 +33,8 @@ data['scope'] = ['user-read-recently-played', 'user-modify-playback-state', 'use
 
 r = requests.post(url=token_request_url, headers=headers, data=data)
   
-token = r.json()['access_token']
-print(token)
+token = r.json().get('access_token')
+
 
 headers = {
     'Authorization': 'Bearer {token}'.format(token=token)
@@ -46,20 +46,37 @@ BASE_URL = 'https://api.spotify.com/v1/'
 
 
 def getLoudestSection(track_id, auth):
-    print(track_id)
+    """Return the start time and duration of the loudest section for a track.
+
+    If Spotify's analysis data is unavailable, fall back to the first 20
+    seconds of the track so playback still works instead of throwing a
+    KeyError.
+    """
     r = requests.get(BASE_URL + 'audio-analysis/' + track_id, headers=auth)
+    data = r.json()
 
-    r = r.json()
+    segments = data.get('sections') or data.get('segments')
+    if not segments:
+        return [0, 20]
 
-    #print(json.dumps(r['segments'], indent=2))
-
-    segments = r['sections']
-
-    loudest_section = max(segments, key = lambda x: x['loudness'])
-
-    return [loudest_section['start'], loudest_section['duration']]
+    loudest = max(segments, key=lambda x: x.get('loudness', 0))
+    return [loudest.get('start', 0), loudest.get('duration', 20)]
 
 
+
+def get_available_devices(auth):
+    """Return list of available playback devices"""
+    r = requests.get(BASE_URL + "me/player/devices", headers=auth)
+    return r.json().get("devices", [])
+
+
+def transfer_playback(device_id, auth):
+    """Make sure Spotify is playing on the given device"""
+    requests.put(
+        BASE_URL + "me/player",
+        json={"device_ids": [device_id], "play": False},
+        headers=auth,
+    )
 
 def get_available_devices(auth):
     """Return list of available playback devices"""
