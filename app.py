@@ -101,3 +101,4 @@ def generate_playlist():
     playlist_id = create_playlist_with_tracks(user['id'], playlist_name, uris, auth)
     return render_template('recommendations.html', playlist_id=playlist_id, category=category, recs=recs, playlist_name=playlist_name)
 
+
