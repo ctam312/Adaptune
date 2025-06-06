@@ -61,17 +61,47 @@ def getLoudestSection(track_id, auth):
 
 
 
-def playTrack(context_uri, section, pos, auth):
+def get_available_devices(auth):
+    """Return list of available playback devices"""
+    r = requests.get(BASE_URL + "me/player/devices", headers=auth)
+    return r.json().get("devices", [])
 
-    dat= {
-    "context_uri": context_uri,
-    "offset": {'position': pos},
-    "position_ms": int(section[0]*1000)
+
+def transfer_playback(device_id, auth):
+    """Make sure Spotify is playing on the given device"""
+    requests.put(
+        BASE_URL + "me/player",
+        json={"device_ids": [device_id], "play": False},
+        headers=auth,
+    )
+
+
+def playTrack(context_uri, section, pos, auth):
+    """Play the loudest section of a track on the user's active device"""
+    devices = get_available_devices(auth)
+    if not devices:
+        return
+    device_id = devices[0]["id"]
+    transfer_playback(device_id, auth)
+
+    dat = {
+        "context_uri": context_uri,
+        "offset": {"position": pos},
+        "position_ms": int(section[0] * 1000),
     }
 
-    r = requests.put('https://api.spotify.com/v1/me/player/play', data=json.dumps(dat), headers=auth)
+    requests.put(
+        "https://api.spotify.com/v1/me/player/play",
+        params={"device_id": device_id},
+        data=json.dumps(dat),
+        headers=auth,
+    )
     time.sleep(min(section[1], 25))
-    r = requests.put('https://api.spotify.com/v1/me/player/pause', headers=auth)
+    requests.put(
+        "https://api.spotify.com/v1/me/player/pause",
+        params={"device_id": device_id},
+        headers=auth,
+    )
 
 
 
