@@ -17,7 +17,7 @@ class SpotifyClient:
     SCOPE = (
         "playlist-modify-public playlist-modify-private playlist-read-private "
         "user-read-recently-played user-modify-playback-state playlist-read-private "
-        "user-read-playback-state"
+        "user-read-playback-state user-read-private"
     )
 
     # Client side
