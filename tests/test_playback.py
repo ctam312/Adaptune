@@ -36,7 +36,7 @@ class MockResponse:
     def __init__(self, data, raise_json=False):
         self.data = data
         self.raise_json = raise_json
-        self.status_code = 200
+
     def json(self):
         if self.raise_json:
             raise ValueError("bad json")
