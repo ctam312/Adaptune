@@ -78,6 +78,7 @@ def get_available_devices(auth):
     return r.json().get("devices", [])
 
 
+
 def transfer_playback(device_id, auth):
     """Make sure Spotify is playing on the given device"""
     requests.put(
@@ -85,7 +86,6 @@ def transfer_playback(device_id, auth):
         json={"device_ids": [device_id], "play": False},
         headers=auth,
     )
-
 
 
 def playTrack(context_uri, section, pos, auth):
