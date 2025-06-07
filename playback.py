@@ -1,6 +1,5 @@
 
 # used to access environment variables securely (sensitive data)
-from email.quoprimime import body_check
 import os
 
 # used to encode strings into bytes and back
@@ -33,8 +32,8 @@ data['scope'] = ['user-read-recently-played', 'user-modify-playback-state', 'use
 
 r = requests.post(url=token_request_url, headers=headers, data=data)
   
-token = r.json()['access_token']
-print(token)
+token = r.json().get('access_token')
+
 
 headers = {
     'Authorization': 'Bearer {token}'.format(token=token)
@@ -46,32 +45,65 @@ BASE_URL = 'https://api.spotify.com/v1/'
 
 
 def getLoudestSection(track_id, auth):
-    print(track_id)
+    """Return the start time and duration of the loudest section for a track.
+
+    If Spotify's analysis data is unavailable, fall back to the first 20
+    seconds of the track so playback still works instead of throwing a
+    KeyError.
+    """
     r = requests.get(BASE_URL + 'audio-analysis/' + track_id, headers=auth)
+    data = r.json()
 
-    r = r.json()
+    segments = data.get('sections') or data.get('segments')
+    if not segments:
+        return [0, 20]
 
-    #print(json.dumps(r['segments'], indent=2))
+    loudest = max(segments, key=lambda x: x.get('loudness', 0))
+    return [loudest.get('start', 0), loudest.get('duration', 20)]
 
-    segments = r['sections']
 
-    loudest_section = max(segments, key = lambda x: x['loudness'])
 
-    return [loudest_section['start'], loudest_section['duration']]
+def get_available_devices(auth):
+    """Return list of available playback devices"""
+    r = requests.get(BASE_URL + "me/player/devices", headers=auth)
+    return r.json().get("devices", [])
 
+
+def transfer_playback(device_id, auth):
+    """Make sure Spotify is playing on the given device"""
+    requests.put(
+        BASE_URL + "me/player",
+        json={"device_ids": [device_id], "play": False},
+        headers=auth,
+    )
 
 
 def playTrack(context_uri, section, pos, auth):
+    """Play the loudest section of a track on the user's active device"""
+    devices = get_available_devices(auth)
+    if not devices:
+        return
+    device_id = devices[0]["id"]
+    transfer_playback(device_id, auth)
 
-    dat= {
-    "context_uri": context_uri,
-    "offset": {'position': pos},
-    "position_ms": int(section[0]*1000)
+    dat = {
+        "context_uri": context_uri,
+        "offset": {"position": pos},
+        "position_ms": int(section[0] * 1000),
     }
 
-    r = requests.put('https://api.spotify.com/v1/me/player/play', data=json.dumps(dat), headers=auth)
+    requests.put(
+        "https://api.spotify.com/v1/me/player/play",
+        params={"device_id": device_id},
+        data=json.dumps(dat),
+        headers=auth,
+    )
     time.sleep(min(section[1], 25))
-    r = requests.put('https://api.spotify.com/v1/me/player/pause', headers=auth)
+    requests.put(
+        "https://api.spotify.com/v1/me/player/pause",
+        params={"device_id": device_id},
+        headers=auth,
+    )
 
 
 
@@ -109,6 +141,78 @@ def nextTrack(auth):
 def playSingleTrack(playlistId, trackId, auth, pos):
     s = getLoudestSection(trackId, auth)
     playTrack('spotify:playlist:{}'.format(playlistId), s, pos, auth)
+
+
+def get_audio_features(track_ids, auth):
+    """Return audio features for a list of track ids"""
+    if not track_ids:
+        return []
+    params = {"ids": ",".join(track_ids)}
+    r = requests.get(BASE_URL + "audio-features", params=params, headers=auth)
+    return r.json().get("audio_features", [])
+
+
+def categorize_user(features):
+    """Simple categorization based on average energy/valence/danceability."""
+    if not features:
+        return "Unknown"
+    energy = sum(f["energy"] for f in features if f) / len(features)
+    valence = sum(f["valence"] for f in features if f) / len(features)
+    dance = sum(f["danceability"] for f in features if f) / len(features)
+    if energy > 0.7 and valence > 0.6:
+        return "Upbeat"
+    if energy < 0.4 and valence < 0.4:
+        return "Chill"
+    if dance > 0.7:
+        return "Dance"
+    return "Balanced"
+
+
+def get_recommendations(seed_tracks, auth, limit=20):
+    """Return Spotify recommendations for the given seed tracks.
+
+    Any of the seed tracks may appear in the response, so filter them out
+    before returning the recommended tracks.
+    """
+    if not seed_tracks:
+        return []
+
+    params = {"seed_tracks": ",".join(seed_tracks[:5]), "limit": limit}
+    r = requests.get(BASE_URL + "recommendations", params=params, headers=auth)
+    try:
+        data = r.json()
+    except ValueError:
+        return []
+
+    tracks = data.get("tracks", [])
+    seed_set = set(seed_tracks)
+    # remove any tracks that are already in the seed list
+    filtered = [t for t in tracks if t.get("id") not in seed_set]
+    return filtered
+
+
+def get_user_profile(auth):
+    r = requests.get(BASE_URL + "me", headers=auth)
+    try:
+        return r.json()
+    except ValueError:
+        return {}
+
+
+def create_playlist_with_tracks(user_id, name, track_uris, auth):
+    payload = {"name": name, "description": "Generated by Adaptune AI"}
+    r = requests.post(BASE_URL + f"users/{user_id}/playlists", json=payload, headers=auth)
+    try:
+        playlist_id = r.json().get("id")
+    except ValueError:
+        playlist_id = None
+    if playlist_id and track_uris:
+        requests.post(
+            BASE_URL + f"playlists/{playlist_id}/tracks",
+            json={"uris": track_uris},
+            headers=auth,
+        )
+    return playlist_id
 
 
 if __name__ == "__main__":
