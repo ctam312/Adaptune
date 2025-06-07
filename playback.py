@@ -87,6 +87,7 @@ def transfer_playback(device_id, auth):
     )
 
 
+
 def playTrack(context_uri, section, pos, auth):
     """Play the loudest section of a track on the user's active device"""
     devices = get_available_devices(auth)

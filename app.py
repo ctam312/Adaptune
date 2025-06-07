@@ -116,4 +116,3 @@ def generate_playlist():
         recs=recs,
         playlist_name=playlist_name,
     )
-
