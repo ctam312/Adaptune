@@ -1,6 +1,10 @@
 from flask import *
 from authorization import SpotifyClient
 from urllib.parse import urlparse
+
+import threading
+import os
+
 from playback import (
     getTrackIds,
     playSingleTrack,
@@ -24,19 +28,18 @@ def home():
 
 @app.route("/login", methods=['POST', 'GET'])
 def login():
-    client_id = 'e7dd4d704dbf462da4d1bb541f55695f'
-    client_secret = '07bc8202e8404f7e82df0d49a7128129'
+    client_id = os.getenv('SPOTIFY_CLIENT_ID')
+    client_secret = os.getenv('SPOTIFY_CLIENT_SECRET')
     spotify_client = SpotifyClient(client_id, client_secret, port=5000)
     auth_url = spotify_client.get_auth_url()
-    print('hello')
     return redirect(auth_url)
     
 
 @app.route("/callback/q")
 def callback():
     auth_token = request.args['code']
-    client_id = 'e7dd4d704dbf462da4d1bb541f55695f'
-    client_secret = '07bc8202e8404f7e82df0d49a7128129'
+    client_id = os.getenv('SPOTIFY_CLIENT_ID')
+    client_secret = os.getenv('SPOTIFY_CLIENT_SECRET')
     spotify_client = SpotifyClient(client_id, client_secret, port=5000)
     spotify_client.get_authorization(auth_token)
     authorization_header = spotify_client.authorization_header
@@ -55,10 +58,8 @@ def playlist():
             o = urlparse(data)
             p = o.path.split('/')
             id = p[-1]
-            print(id)
             tracks = getTracks(id, session["auth"])
             session["playlistId"] = id
-            print(tracks)
         except:
             return "invalid playlist link"
 
@@ -68,12 +69,16 @@ def playlist():
 @app.route('/background_process_test')
 def background_process_test():
     args = request.args.to_dict()
-    playSingleTrack(
-        session["playlistId"],
-        args["trackId"],
-        session["auth"],
-        args["index"],
+    thread = threading.Thread(
+        target=playSingleTrack,
+        args=(
+            session["playlistId"],
+            args["trackId"],
+            session["auth"],
+            args["index"],
+        ),
     )
+    thread.start()
     return ("", 204)
 
 
@@ -100,7 +105,9 @@ def generate_playlist():
     recs = get_recommendations(liked[:5], auth)
     # Remove any songs that the user already liked to keep the playlist fresh
     recs = [t for t in recs if t.get('id') not in liked]
-    uris = [t['uri'] for t in recs]
+    liked_uris = [f"spotify:track:{tid}" for tid in liked]
+    rec_uris = [t['uri'] for t in recs]
+    uris = liked_uris + rec_uris
     user = get_user_profile(auth)
     user_id = user.get('id')
     if not user_id:

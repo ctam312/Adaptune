@@ -88,7 +88,12 @@ Ensure you have the latest version of Python installed: (https://www.python.org/
    ```sh
    pip install -r requirements.txt
    ```
-3. Run Flask app in terminal
+3. Set the following environment variables with your Spotify API credentials:
+   ```sh
+   export SPOTIFY_CLIENT_ID="<your client id>"
+   export SPOTIFY_CLIENT_SECRET="<your client secret>"
+   ```
+4. Run Flask app in terminal
    ```sh
    flask run
    ```
@@ -101,7 +106,6 @@ Run the unit tests with pytest:
 pytest -q
 ```
 
-(note that client key and secret are temporarily public for ease of use)
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 
