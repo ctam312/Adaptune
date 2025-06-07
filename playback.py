@@ -1,16 +1,21 @@
 
 # Standard library imports
 import time
+import os
 
 # Third party imports
 import requests
 
+BASE_URL = 'https://api.spotify.com/v1/'
 
 
-CLIENT_ID = os.getenv("SPOTIFY_CLIENT_ID")
-CLIENT_SECRET = os.getenv("SPOTIFY_CLIENT_SECRET")
-
-
+    Falls back to the first 20 seconds when analysis data is unavailable.
+    """
+    r = requests.get(BASE_URL + "audio-analysis/" + track_id, headers=auth)
+    try:
+        data = r.json()
+    except ValueError:
+        return [0, 20]
 
 
 def getLoudestSection(track_id, auth):
@@ -24,6 +29,7 @@ def getLoudestSection(track_id, auth):
     except ValueError:
         return [0, 20]
 
+
     segments = data.get("segments")
     if segments:
         loudest = max(
@@ -31,7 +37,6 @@ def getLoudestSection(track_id, auth):
             key=lambda x: x.get("loudness_max", x.get("loudness", 0)),
         )
         return [loudest.get("start", 0), loudest.get("duration", 20)]
-
 
     sections = data.get("sections")
     if sections:
