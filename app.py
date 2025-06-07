@@ -95,12 +95,14 @@ def generate_playlist():
     features = get_audio_features(liked, auth)
     category = categorize_user(features)
     recs = get_recommendations(liked[:5], auth)
+    # Remove any songs that the user already liked to keep the playlist fresh
+    recs = [t for t in recs if t.get('id') not in liked]
     uris = [t['uri'] for t in recs]
     user = get_user_profile(auth)
     user_id = user.get('id')
     if not user_id:
         return 'Failed to fetch user profile', 500
-    playlist_name = f"Adaptune {category} Mix"
+    playlist_name = category
     playlist_id = create_playlist_with_tracks(user_id, playlist_name, uris, auth)
     if not playlist_id:
         return 'Failed to create playlist', 500

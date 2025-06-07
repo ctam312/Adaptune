@@ -168,6 +168,14 @@ def categorize_user(features):
 
 
 def get_recommendations(seed_tracks, auth, limit=20):
+    """Return Spotify recommendations for the given seed tracks.
+
+    Any of the seed tracks may appear in the response, so filter them out
+    before returning the recommended tracks.
+    """
+    if not seed_tracks:
+        return []
+
     params = {"seed_tracks": ",".join(seed_tracks[:5]), "limit": limit}
     r = requests.get(BASE_URL + "recommendations", params=params, headers=auth)
 
@@ -175,7 +183,12 @@ def get_recommendations(seed_tracks, auth, limit=20):
         data = r.json()
     except ValueError:
         return []
-    return data.get("tracks", [])
+
+    tracks = data.get("tracks", [])
+    seed_set = set(seed_tracks)
+    # remove any tracks that are already in the seed list
+    filtered = [t for t in tracks if t.get("id") not in seed_set]
+    return filtered
 
 
 def get_user_profile(auth):
