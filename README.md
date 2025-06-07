@@ -93,6 +93,14 @@ Ensure you have the latest version of Python installed: (https://www.python.org/
    flask run
    ```
 
+### Running Tests
+
+Run the unit tests with pytest:
+
+```sh
+pytest -q
+```
+
 (note that client key and secret are temporarily public for ease of use)
 <p align="right">(<a href="#top">back to top</a>)</p>
 
