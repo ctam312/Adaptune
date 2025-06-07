@@ -93,6 +93,7 @@ Ensure you have the latest version of Python installed: (https://www.python.org/
    export SPOTIFY_CLIENT_ID="<your client id>"
    export SPOTIFY_CLIENT_SECRET="<your client secret>"
    ```
+
 4. In the [Spotify Developer Dashboard](https://developer.spotify.com/dashboard/applications),
    add `http://127.0.0.1:5000/callback/q` as a redirect URI for your app
 5. Run Flask app in terminal
@@ -107,6 +108,7 @@ Run the unit tests with pytest:
 ```sh
 pytest -q
 ```
+
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 
