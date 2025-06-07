@@ -14,7 +14,11 @@ class SpotifyClient:
     STATE = ""
     SHOW_DIALOG_bool = True
     SHOW_DIALOG_str = str(SHOW_DIALOG_bool).lower()
-    SCOPE = "playlist-modify-public playlist-modify-private playlist-read-private user-read-recently-played user-modify-playback-state playlist-read-private" 
+    SCOPE = (
+        "playlist-modify-public playlist-modify-private playlist-read-private "
+        "user-read-recently-played user-modify-playback-state playlist-read-private "
+        "user-read-playback-state user-read-private"
+    )
 
     # Client side
     CLIENT_SIDE_URL = 'http://127.0.0.1'
