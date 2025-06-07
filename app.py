@@ -1,8 +1,10 @@
 from flask import *
 from authorization import SpotifyClient
 from urllib.parse import urlparse
+
 import threading
 import os
+
 from playback import (
     getTrackIds,
     playSingleTrack,

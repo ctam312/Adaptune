@@ -105,6 +105,7 @@ Run the unit tests with pytest:
 ```sh
 pytest -q
 ```
+
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 
