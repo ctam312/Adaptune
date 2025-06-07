@@ -1,7 +1,6 @@
 from flask import *
 from authorization import SpotifyClient
 from urllib.parse import urlparse
-
 import threading
 import os
 
@@ -30,6 +29,12 @@ def home():
 def login():
     client_id = os.getenv('SPOTIFY_CLIENT_ID')
     client_secret = os.getenv('SPOTIFY_CLIENT_SECRET')
+
+    if not client_id or not client_secret:
+        return (
+            "Spotify credentials not configured. Please set SPOTIFY_CLIENT_ID and SPOTIFY_CLIENT_SECRET.",
+            500,
+        )
     spotify_client = SpotifyClient(client_id, client_secret, port=5000)
     auth_url = spotify_client.get_auth_url()
     return redirect(auth_url)

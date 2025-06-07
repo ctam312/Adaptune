@@ -1,19 +1,15 @@
 
 # Standard library imports
-import os
-import json
 import time
 
 # Third party imports
 import requests
 
 
+
 CLIENT_ID = os.getenv("SPOTIFY_CLIENT_ID")
 CLIENT_SECRET = os.getenv("SPOTIFY_CLIENT_SECRET")
 
-
-
-BASE_URL = 'https://api.spotify.com/v1/'
 
 
 
@@ -35,6 +31,8 @@ def getLoudestSection(track_id, auth):
             key=lambda x: x.get("loudness_max", x.get("loudness", 0)),
         )
         return [loudest.get("start", 0), loudest.get("duration", 20)]
+
+
     sections = data.get("sections")
     if sections:
         loudest = max(sections, key=lambda x: x.get("loudness", 0))
@@ -59,11 +57,7 @@ def transfer_playback(device_id, auth):
         headers=auth,
     )
 
-def get_available_devices(auth):
-    """Return list of available playback devices"""
-    r = requests.get(BASE_URL + "me/player/devices", headers=auth)
-    return r.json().get("devices", [])
-  
+
 def playTrack(context_uri, section, pos, auth):
     """Play the loudest section of a track on the user's active device"""
     devices = get_available_devices(auth)
