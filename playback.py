@@ -77,8 +77,6 @@ def get_available_devices(auth):
     r = requests.get(BASE_URL + "me/player/devices", headers=auth)
     return r.json().get("devices", [])
 
-
-
 def transfer_playback(device_id, auth):
     """Make sure Spotify is playing on the given device"""
     requests.put(
