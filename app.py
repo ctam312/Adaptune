@@ -68,10 +68,13 @@ def playlist():
 @app.route('/background_process_test')
 def background_process_test():
     args = request.args.to_dict()
-
-    tracks = getTracks(session["playlistId"], session["auth"])
-    playSingleTrack(session["playlistId"], args['trackId'], session["auth"], args['index'])
-    return render_template('user_playlist.html', tracks=tracks, playlistId=session["playlistId"], len=len(tracks))
+    playSingleTrack(
+        session["playlistId"],
+        args["trackId"],
+        session["auth"],
+        args["index"],
+    )
+    return ("", 204)
 
 
 @app.route('/like_track', methods=['POST'])
@@ -113,4 +116,3 @@ def generate_playlist():
         recs=recs,
         playlist_name=playlist_name,
     )
-

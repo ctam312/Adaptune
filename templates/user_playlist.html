@@ -49,10 +49,13 @@
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
     <script type=text/javascript>
             $(function() {
-            $('button.play-btn').on('click', function(e) {
-                e.preventDefault();
-                $.getJSON('/background_process_test', {trackId: $(this).attr('trackId'), index: $(this).attr('index')}, function(data) {});
-            });
+                $('button.play-btn').on('click', function(e) {
+                    e.preventDefault();
+                    $.get('/background_process_test', {
+                        trackId: $(this).attr('trackId'),
+                        index: $(this).attr('index')
+                    });
+                });
             });
     </script>
 
