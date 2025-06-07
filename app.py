@@ -1,7 +1,18 @@
 from flask import *
 from authorization import SpotifyClient
 from urllib.parse import urlparse
-from playback import getTrackIds, playSingleTrack, playTracks, playTrack, getTracks
+from playback import (
+    getTrackIds,
+    playSingleTrack,
+    playTracks,
+    playTrack,
+    getTracks,
+    get_audio_features,
+    categorize_user,
+    get_recommendations,
+    create_playlist_with_tracks,
+    get_user_profile,
+)
 
 
 app = Flask(__name__)
@@ -61,3 +72,43 @@ def background_process_test():
     tracks = getTracks(session["playlistId"], session["auth"])
     playSingleTrack(session["playlistId"], args['trackId'], session["auth"], args['index'])
     return render_template('user_playlist.html', tracks=tracks, playlistId=session["playlistId"], len=len(tracks))
+
+
+@app.route('/like_track', methods=['POST'])
+def like_track():
+    track_id = request.form.get('track_id')
+    liked = session.get('liked_tracks', [])
+    if track_id in liked:
+        liked.remove(track_id)
+    else:
+        liked.append(track_id)
+    session['liked_tracks'] = liked
+    return ('', 204)
+
+
+@app.route('/generate_playlist')
+def generate_playlist():
+    liked = session.get('liked_tracks', [])
+    if not liked:
+        return 'No tracks liked', 400
+    auth = session['auth']
+    features = get_audio_features(liked, auth)
+    category = categorize_user(features)
+    recs = get_recommendations(liked[:5], auth)
+    uris = [t['uri'] for t in recs]
+    user = get_user_profile(auth)
+    user_id = user.get('id')
+    if not user_id:
+        return 'Failed to fetch user profile', 500
+    playlist_name = f"Adaptune {category} Mix"
+    playlist_id = create_playlist_with_tracks(user_id, playlist_name, uris, auth)
+    if not playlist_id:
+        return 'Failed to create playlist', 500
+    return render_template(
+        'recommendations.html',
+        playlist_id=playlist_id,
+        category=category,
+        recs=recs,
+        playlist_name=playlist_name,
+    )
+
