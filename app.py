@@ -3,6 +3,7 @@ from authorization import SpotifyClient
 from urllib.parse import urlparse
 import threading
 import os
+
 from playback import (
     getTrackIds,
     playSingleTrack,
@@ -28,6 +29,7 @@ def home():
 def login():
     client_id = os.getenv('SPOTIFY_CLIENT_ID')
     client_secret = os.getenv('SPOTIFY_CLIENT_SECRET')
+
     if not client_id or not client_secret:
         return (
             "Spotify credentials not configured. Please set SPOTIFY_CLIENT_ID and SPOTIFY_CLIENT_SECRET.",
