@@ -77,7 +77,6 @@ def transfer_playback(device_id, auth):
         headers=auth,
     )
 
-
 def playTrack(context_uri, section, pos, auth):
     """Play the loudest section of a track on the user's active device"""
     devices = get_available_devices(auth)
@@ -171,6 +170,7 @@ def categorize_user(features):
 def get_recommendations(seed_tracks, auth, limit=20):
     params = {"seed_tracks": ",".join(seed_tracks[:5]), "limit": limit}
     r = requests.get(BASE_URL + "recommendations", params=params, headers=auth)
+
     try:
         data = r.json()
     except ValueError:
