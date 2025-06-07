@@ -36,8 +36,8 @@
                     <p>{{tracks[i]['artists'][0]['name']}}</p>
                 </div>
                 <div id="actions">
-                    <a href=# id="test" trackId="{{tracks[i]['id']}}" index="{{i}}"><button class="fas fa-play-circle" trackId="{{tracks[i]['id']}}" index="{{i}}" ></button></a>
-                    <a href=# id="like" trackId="{{tracks[i]['id']}}" index="{{i}}"><button id="like" class="far fa-heart" trackId="{{tracks[i]['id']}}" index="{{i}}" onclick="myFunction(this)"></button></a>
+                    <button class="fas fa-play-circle play-btn" trackId="{{tracks[i]['id']}}" index="{{i}}"></button>
+                    <button class="far fa-heart like-btn" trackId="{{tracks[i]['id']}}" index="{{i}}" onclick="myFunction(this); return false;"></button>
                 </div>
             </div>
         {%endfor%}
@@ -49,14 +49,13 @@
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
     <script type=text/javascript>
             $(function() {
-            $('a#test').on('click', function(e) {
-                e.preventDefault()
-                $.getJSON('/background_process_test', {trackId: e.target.getAttribute('trackId'), index: e.target.getAttribute('index')},
-                    function(data) {
-                //do nothing
+                $('button.play-btn').on('click', function(e) {
+                    e.preventDefault();
+                    $.get('/background_process_test', {
+                        trackId: $(this).attr('trackId'),
+                        index: $(this).attr('index')
+                    });
                 });
-                return false;
-            });
             });
     </script>
 
@@ -68,19 +67,22 @@ function myFunction(element) {
         elem.classList.add('fas');
         elem.classList.remove('far');
         elem.style.color = 'red';
+        $.post('/like_track', {track_id: elem.getAttribute('trackId')});
     }
     else {
         elem.classList.add('far');
         elem.classList.remove('fas');
         elem.style.color = 'black';
+        $.post('/like_track', {track_id: elem.getAttribute('trackId')});
     }
+    return false;
 }
 </script>
 
   
 
     <div id="extras">
-    <a><button>Generate playlist</button></a>
+    <a href="{{ url_for('generate_playlist') }}"><button id="generate">Generate playlist</button></a>
     <br/>
     <a href="{{ url_for('playlist') }}"><button>Back to Search</button></a>
     </div>
