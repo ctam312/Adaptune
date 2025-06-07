@@ -77,7 +77,6 @@ def transfer_playback(device_id, auth):
         json={"device_ids": [device_id], "play": False},
         headers=auth,
     )
-
 def get_available_devices(auth):
     """Return list of available playback devices"""
     r = requests.get(BASE_URL + "me/player/devices", headers=auth)
@@ -91,7 +90,6 @@ def transfer_playback(device_id, auth):
         json={"device_ids": [device_id], "play": False},
         headers=auth,
     )
-
 
 def playTrack(context_uri, section, pos, auth):
     """Play the loudest section of a track on the user's active device"""

@@ -97,7 +97,18 @@ def generate_playlist():
     recs = get_recommendations(liked[:5], auth)
     uris = [t['uri'] for t in recs]
     user = get_user_profile(auth)
+    user_id = user.get('id')
+    if not user_id:
+        return 'Failed to fetch user profile', 500
     playlist_name = f"Adaptune {category} Mix"
-    playlist_id = create_playlist_with_tracks(user['id'], playlist_name, uris, auth)
-    return render_template('recommendations.html', playlist_id=playlist_id, category=category, recs=recs, playlist_name=playlist_name)
+    playlist_id = create_playlist_with_tracks(user_id, playlist_name, uris, auth)
+    if not playlist_id:
+        return 'Failed to create playlist', 500
+    return render_template(
+        'recommendations.html',
+        playlist_id=playlist_id,
+        category=category,
+        recs=recs,
+        playlist_name=playlist_name,
+    )
 
